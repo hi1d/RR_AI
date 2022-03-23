@@ -79,7 +79,17 @@ ASGI_APPLICATION = 'config.asgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 pymysql.install_as_MySQLdb()
-DATABASES = DATABASES
+DATABASES = {
+    'default': {
+        'ENGINE': "django.db.backends.mysql",
+        'NAME': "rrproject",
+        "USER": "rradmin",
+        "PASSWORD": "tlqtkrlwhdkfdkf",
+        "HOST": "rrproject13.cudljsclqczn.ap-northeast-2.rds.amazonaws.com",
+        "PORT": "3306",
+    }
+}
+
 
 
 # Password validation
