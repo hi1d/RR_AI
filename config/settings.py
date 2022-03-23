@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from typing import List
 import pymysql
-from .conf.local_settings import *
+# from .conf.local_settings import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
