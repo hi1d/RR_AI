@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from typing import List
 import pymysql
-# from .conf.local_settings import *
+from config.conf import *
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,16 +79,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 pymysql.install_as_MySQLdb()
-DATABASES = {
-    'default': {
-        'ENGINE': "django.db.backends.mysql",
-        'NAME': "rrproject",
-        "USER": "rradmin",
-        "PASSWORD": "tlqtkrlwhdkfdkf",
-        "HOST": "rrproject13.cudljsclqczn.ap-northeast-2.rds.amazonaws.com",
-        "PORT": "3306",
-    }
-}
+DATABASES = DATABASES
 
 
 
