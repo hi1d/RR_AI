@@ -24,7 +24,8 @@ class Recommand_Repository:
             topics = list(filter(lambda x:x != '', row['topics'].split(',')))
             repo_id = row['repo_id']
             topics.append(row['keyword'])
-            topics.append(row['language'])
+            if type(row['language']) == str:
+                topics.append(row['language'])
             data[repo_id] = ' '.join(topics)
         self.index = list(data.keys())
         self.keywords = list(data.values())
@@ -42,4 +43,3 @@ class Recommand_Repository:
         similarity = cosine_similarity(tfdiv_df, tfdiv_df)
         item_based_similarity = pd.DataFrame(similarity, index=self.index, columns=self.index)
         self.repositories = item_based_similarity[self.repo].sort_values(ascending=False)[:20]
-        print(self.repositories)
