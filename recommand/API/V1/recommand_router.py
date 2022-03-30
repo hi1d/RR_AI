@@ -2,6 +2,7 @@ from typing import List
 from django.shortcuts import redirect
 from ninja import Router
 from django.http import HttpRequest, JsonResponse
+from numpy import rec
 from recommand.models import Repositories
 from recommand.API.V1.schemas import (
     Create_Request,
@@ -20,12 +21,11 @@ router = Router(tags=["recommand"])
 def Create_Recommand(request: HttpRequest, create_request: Create_Request) -> List[Repositories]:
     recommands = Recommand_Repository(create_request.REPO_ID, 'repo.csv')
     recommands_list = [repository for repository in recommands.repositories.keys()]
-    repositories = list(Repositories.objects.all())
-    repos = [0 for i in range(len(recommands_list))]
-    for repository in repositories:
-        if repository.repo_id in recommands_list:
-            index = recommands_list.index(repository.repo_id)
-            repos[index] = repository
+    repo_db = list(Repositories.objects.filter(repo_id__in=recommands_list))
+    repos = [0 for _ in range(len(recommands_list))]
+    for i in repo_db:
+        repos[recommands_list.index(i.repo_id)] = i
+
     return repos
 
 @router.post("/crawling_data/", response=CrawlingResponse)
@@ -41,6 +41,6 @@ def create_csv(request: HttpRequest):
 
 @router.get("/searchkeyword/{keyword}", response=SearchResponse)
 def search_keyword(request: HttpRequest, keyword: str) -> dict:
-    keyword = re.sub('[^a-zA-Z0-9가-힣]','',keyword)
+    keyword = re.sub('[^a-zA-Z0-9가-힣]','', keyword)
     keyword_page =  SEARCH_KEYWORD(keyword)
     return JsonResponse({"message" : keyword_page})

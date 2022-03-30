@@ -42,4 +42,4 @@ class Recommand_Repository:
     def run_cosine_similarity(self, tfdiv_df):
         similarity = cosine_similarity(tfdiv_df, tfdiv_df)
         item_based_similarity = pd.DataFrame(similarity, index=self.index, columns=self.index)
-        self.repositories = item_based_similarity[self.repo].sort_values(ascending=False)[:20]
+        self.repositories = item_based_similarity[self.repo].sort_values(ascending=False)[1:21]

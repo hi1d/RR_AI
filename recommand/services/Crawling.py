@@ -1,12 +1,9 @@
-import json
 from config.conf.github_token import token
 from recommand.models import Repositories
 import requests, asyncio
 from time import time
-from asgiref.sync import sync_to_async
-from django.db.transaction import atomic
 
-@atomic
+
 def db_create(repo_dict: dict, keyword: str):
     if repo_dict['topics'] == []:
         return 
@@ -25,14 +22,14 @@ def db_create(repo_dict: dict, keyword: str):
 
 
 async def REPO_INFO(repo: dict, keyword: str) -> None:
-    
-    await sync_to_async(db_create)(repo, keyword)
+    await loop.run_in_executor(None, db_create, repo, keyword)
 
 async def async_run(keyword):
     headers = {'Authorization': f'token {token}'}
     repo_list = requests.get(f'https://api.github.com/search/repositories?q={keyword}&sort=stars&order=desc&per_page=100', headers=headers).json()
     futures = [asyncio.ensure_future(REPO_INFO(repo, keyword)) for repo in repo_list['items']]
     await asyncio.gather(*futures)
+
 
 def search_loop_start(keyword):
     loop.run_until_complete(async_run(keyword))        
