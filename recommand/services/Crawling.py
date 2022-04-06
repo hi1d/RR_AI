@@ -29,7 +29,13 @@ async def REPO_INFO(repo: dict, keyword: str) -> None:
 async def async_run(keyword):
     headers = {'Authorization': f'token {token}'}
     repo_list = requests.get(f"https://api.github.com/search/repositories?q={keyword}&sort=stars&order=desc&per_page=100", headers=headers).json()
-    
+    try:
+        repo_list['errors']
+    except KeyError:
+        pass
+    else:
+        raise HttpError(404, "keyword is None")
+
     if repo_list['total_count'] == 0:
         raise HttpError(404, "keyword is None")
     futures = [asyncio.ensure_future(REPO_INFO(repo, keyword)) for repo in repo_list['items']]
