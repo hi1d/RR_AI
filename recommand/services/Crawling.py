@@ -2,11 +2,13 @@ from config.conf.github_token import token
 from recommand.models import Repositories
 import requests, asyncio
 from time import time
+from ninja.errors import HttpError
 
 
 def db_create(repo_dict: dict, keyword: str):
-    if repo_dict['topics'] == []:
-        return 
+    if len(repo_dict['topics']) == 0:
+        return
+
     Repositories.objects.create(
         keyword = keyword,
         repo_id = repo_dict['id'],
@@ -26,7 +28,10 @@ async def REPO_INFO(repo: dict, keyword: str) -> None:
 
 async def async_run(keyword):
     headers = {'Authorization': f'token {token}'}
-    repo_list = requests.get(f'https://api.github.com/search/repositories?q={keyword}&sort=stars&order=desc&per_page=100', headers=headers).json()
+    repo_list = requests.get(f"https://api.github.com/search/repositories?q={keyword}&sort=stars&order=desc&per_page=100", headers=headers).json()
+    
+    if repo_list['total_count'] == 0:
+        raise HttpError(404, "keyword is None")
     futures = [asyncio.ensure_future(REPO_INFO(repo, keyword)) for repo in repo_list['items']]
     await asyncio.gather(*futures)
 

@@ -12,7 +12,7 @@ from recommand.API.V1.schemas import (
     SearchReqeust,
     SearchResponse
 )
-from recommand.services import Recommand_Repository, SEARCH, SEARCH_KEYWORD, DB_TO_CSV
+from recommand.services import Recommand_Repository, SEARCH, SEARCH_KEYWORD, DB_TO_CSV, UPDATE_TOPICS
 import re 
 
 router = Router(tags=["recommand"])
@@ -30,7 +30,7 @@ def Create_Recommand(request: HttpRequest, create_request: Create_Request) -> Li
 
 @router.post("/crawling_data/", response=CrawlingResponse)
 def Crawling_Repo(request: HttpRequest, Crawling_repo_request: CrawlingRequest) -> dict:
-    keyword = re.sub('[^a-zA-Z0-9가-힣]','',Crawling_repo_request.KEYWORD)
+    keyword = re.sub('[^a-zA-Z0-9가-힣-_]','',Crawling_repo_request.KEYWORD)
     SEARCH(keyword)
     return redirect('/api/v1/recommand/update_csv')
 
@@ -44,3 +44,7 @@ def search_keyword(request: HttpRequest, keyword: str) -> dict:
     keyword = re.sub('[^a-zA-Z0-9가-힣]','', keyword)
     keyword_page =  SEARCH_KEYWORD(keyword)
     return JsonResponse({"message" : keyword_page})
+
+@router.get("", response=None)
+def update_topics(request: HttpRequest) -> None:
+    UPDATE_TOPICS()

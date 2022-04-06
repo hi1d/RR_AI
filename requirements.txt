@@ -7,6 +7,7 @@ distlib==0.3.4
 Django==4.0.3
 django-mysql==4.5.0
 django-ninja==0.17.0
+django-cors-headers==3.11.0
 filelock==3.6.0
 idna==3.3
 joblib==1.1.0
